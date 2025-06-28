@@ -18,5 +18,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasMany(u => u.UserProjects)
             .WithOne(up => up.User)
             .HasForeignKey(up => up.UserId);
+
+        builder.HasMany<WorkLog>()
+            .WithOne(wl => wl.User)
+            .HasForeignKey(wl => wl.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

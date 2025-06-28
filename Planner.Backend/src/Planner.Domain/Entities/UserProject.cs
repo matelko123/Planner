@@ -20,5 +20,6 @@ public sealed class UserProject
     public static class Errors
     {
         public static readonly Error UserAlreadyInProject = new(HttpStatusCode.Conflict, "User is already in the project.");
+        public static readonly Error UserNotInProject = new(HttpStatusCode.BadRequest, "User is not in the project.");
     }
 }

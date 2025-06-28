@@ -25,5 +25,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.HasMany(p => p.UserProjects)
             .WithOne(up => up.Project)
             .HasForeignKey(up => up.ProjectId);
+
+        builder.HasMany<WorkLog>()
+            .WithOne(wl => wl.Project)
+            .HasForeignKey(wl => wl.ProjectId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

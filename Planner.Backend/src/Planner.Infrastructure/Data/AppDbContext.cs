@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<User> Users { get; set; } = default!;
     public DbSet<Project> Projects { get; set; } = default!;
     public DbSet<UserProject> UserProjects { get; set; } = default!;
+    public DbSet<WorkLog> WorkLogs { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

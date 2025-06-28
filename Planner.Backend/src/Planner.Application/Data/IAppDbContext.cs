@@ -8,6 +8,7 @@ public interface IAppDbContext
     DbSet<User> Users { get; set; }
     DbSet<Project> Projects { get; set; }
     DbSet<UserProject> UserProjects { get; set; }
+    DbSet<WorkLog> WorkLogs { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }
