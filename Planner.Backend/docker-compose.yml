@@ -1,0 +1,8 @@
+﻿services:
+  planner.api:
+    image: planner.api
+    build:
+      context: .
+      dockerfile: src/Planner.Api/Dockerfile
+    ports:
+      - "5000:8080"
