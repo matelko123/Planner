@@ -1,8 +1,53 @@
 ﻿services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: PlannerDB
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+        
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8082:8080"
+    volumes:
+      - keycloak:/opt/keycloak/data
+    networks:
+      - app-network
+  
   planner.api:
     image: planner.api
     build:
       context: .
       dockerfile: src/Planner.Api/Dockerfile
+    depends_on:
+      - postgres
+      - keycloak
     ports:
       - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=PlannerDB;Username=admin;Password=secret
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+  keycloak:
+
+networks:
+  app-network:
+    driver: bridge
