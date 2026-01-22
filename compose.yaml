@@ -1,0 +1,7 @@
+﻿services:
+  planner.api:
+    image: planner.api
+    build:
+      context: .
+      dockerfile: src/Planner.Api/Dockerfile
+
