@@ -1,41 +1,31 @@
-var builder = WebApplication.CreateBuilder(args);
+using Planner.Api.Extensions;
+using Planner.Api.Features.Projects;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Use full type name for schema IDs to avoid conflicts when multiple endpoints have nested types with same name
+    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+});
 
-// Configure the HTTP request pipeline.
+WebApplication app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Planner API v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
+app.MapEndpoint<GetProjects, ProjectsGroup>();
+app.MapEndpoint<CreateProject, ProjectsGroup>();
+app.MapEndpoint<GetProjectById, ProjectsGroup>();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
